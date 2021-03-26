@@ -25,11 +25,6 @@ func NewReadWriteCloserForInterface(i *net.Interface) (ReadWriteCloser, error) {
 		return nil, errors.New(fmt.Sprintf("本地回环错误%s", err.Error()))
 	}
 
-	err = syscall.SetsockoptByte(s, unix.SOL_CAN_RAW, unix.CAN_RAW_ERR_FILTER, unix.CAN_ERR_TX_TIMEOUT|unix.CAN_ERR_BUSOFF|unix.CAN_ERR_BUSERROR)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("filter错误%s", err.Error()))
-	}
-
 	f := os.NewFile(uintptr(s), fmt.Sprintf("fd %d", s))
 
 	return &readWriteCloser{f}, nil
